@@ -1,0 +1,12 @@
+<table id="wrapper" class="wrapper {{ config.font }}">
+    {% for entry in status %}
+        <tr>
+            <td class="label normal">{{ entry.label }}</td>
+            <td class="value bright">
+                {% if entry.online %}En línea{% else %}Desconectado{% endif %}
+                <i class="fa fa-circle{% if not entry.online %}-o{% endif %} {% if config.colored %}colored {% endif %}{% if entry.online
+                    %}green{% else %}red{% endif %}"></i>
+            </td>
+        </tr>
+    {% endfor %}
+</table>

@@ -1,0 +1,37 @@
+{
+  "name": "MMM-ParallelPing",
+  "version": "2.0.1",
+  "description": "Parallel ping module for MagicMirror2",
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint . && ./node_modules/.bin/stylelint **/*.css",
+    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aangeldeejay/MMM-ParallelPing.git"
+  },
+  "keywords": [
+    "MagicMirror",
+    "ping",
+    "online",
+    "offline"
+  ],
+  "author": "aangeldeejay",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aangeldeejay/MMM-ParallelPing/issues"
+  },
+  "homepage": "https://github.com/aangeldeejay/MMM-ParallelPing#readme",
+  "devDependencies": {
+    "cli": "^1.0.1",
+    "eslint": "^6.8.0",
+    "eslint-config-recommended": "^4.0.0",
+    "jsdoc": "^3.6.11",
+    "jsdocs": "^1.0.0",
+    "stylelint": "^13.3.3",
+    "stylelint-config-standard": "^20.0.0"
+  },
+  "dependencies": {
+    "ping": "^0.2.3"
+  }
+}

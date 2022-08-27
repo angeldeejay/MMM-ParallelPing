@@ -1,0 +1,18 @@
+.MMM-ParallelPing .label {
+  padding-right: 50px;
+  vertical-align: middle;
+}
+
+.MMM-ParallelPing .value {
+  padding-right: 20px;
+}
+
+.MMM-ParallelPing .colored.green,
+.MMM-ParallelPing-modal .colored.green {
+  color: green;
+}
+
+.MMM-ParallelPing .colored.red,
+.MMM-ParallelPing-modal .colored.red {
+  color: red;
+}
