@@ -124,7 +124,14 @@ Module.register("MMM-ParallelPing", {
     start() {
         Log.info(`Starting module: ${this.name}`);
         this.config = { ...this.defaults, ...this.config };
-        this.checkHosts();
+        this.initInterval();
+    },
+
+    initInterval() {
+        if (this.updateInterval !== null) {
+            try { clearInterval(this.updateInterval); } catch (_) { ; }
+            this.updateInterval = null;
+        }
         this.updateInterval = setInterval(() => this.checkHosts(), this.config.updateInterval * 1000);
     },
 
@@ -166,7 +173,7 @@ Module.register("MMM-ParallelPing", {
      */
     notificationReceived(notification, payload, sender) {
         if (notification === "ALL_MODULES_STARTED") {
-            this.checkHosts();
+            this.setUpdateInterval();
         }
     },
 

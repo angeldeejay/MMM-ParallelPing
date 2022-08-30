@@ -33,6 +33,9 @@ const Log = require("../../js/logger.js");
  */
 module.exports = NodeHelper.create({
     busy: false,
+    start: function () {
+        Log.log("Starting MMM-ParallelPing");
+    },
     /**
      * @function socketNotificationReceived
      * @description Receives socket notifications from the module.
@@ -44,19 +47,19 @@ module.exports = NodeHelper.create({
      *
      * @returns {void}
      */
-    socketNotificationReceived(notification, payload) {
+    socketNotificationReceived: function (notification, payload) {
         if (notification === "CHECK_HOSTS" && !this.busy) {
             this.busy = true;
             this.checkHosts(payload).then(() => this.busy = false);
         }
     },
 
-    async checkHosts(hosts) {
+    checkHosts: async function (payload) {
         if (payload.length === 0) {
             Log.log("No hosts to ping");
             this.sendSocketNotification("STATUS_UPDATE", status);
         } else {
-            Log.log("Pinging " + payload.length + " hosts");
+            Log.info("Pinging " + payload.length + " hosts");
             const status = [];
 
             // Ensure to make all ping requests in parallel
@@ -76,13 +79,8 @@ module.exports = NodeHelper.create({
             );
 
             status.sort((a, b) => a.index - b.index);
-            Log.log(
+            Log.info(
                 "Received ping statuses for " + status.length + " hosts"
-            );
-            Log.log(
-                "Rescheculing for the next " +
-                status[0].updateInterval +
-                " seconds"
             );
             this.sendSocketNotification("STATUS_UPDATE", status);
         }
