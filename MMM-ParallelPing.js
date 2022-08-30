@@ -173,7 +173,7 @@ Module.register("MMM-ParallelPing", {
      */
     notificationReceived(notification, payload, sender) {
         if (notification === "ALL_MODULES_STARTED") {
-            this.setUpdateInterval();
+            this.initInterval();
         }
     },
 
