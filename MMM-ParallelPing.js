@@ -55,6 +55,7 @@ Module.register("MMM-ParallelPing", {
         font: "medium",
         transitionTime: 300,
     },
+    updateInterval: null,
 
     /**
      * @function getTranslations
@@ -122,7 +123,9 @@ Module.register("MMM-ParallelPing", {
      */
     start() {
         Log.info(`Starting module: ${this.name}`);
-        setInterval(() => this.checkHosts(), this.config.updateInterval * 1000);
+        this.config = { ...this.defaults, ...this.config };
+        this.checkHosts();
+        this.updateInterval = setInterval(() => this.checkHosts(), this.config.updateInterval * 1000);
     },
 
     /**
