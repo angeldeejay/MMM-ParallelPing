@@ -122,7 +122,7 @@ Module.register("MMM-ParallelPing", {
      */
     start() {
         Log.info(`Starting module: ${this.name}`);
-        setInterval(() => this.checkHosts(), ths.config.updateInterval * 1000);
+        setInterval(() => this.checkHosts(), this.config.updateInterval * 1000);
     },
 
     /**
