@@ -57,16 +57,6 @@ Module.register("MMM-ParallelPing", {
     },
 
     /**
-     * @member {Object} voice - Defines the voice recognition part.
-     * @property {string} mode - MMM-voice mode of this module.
-     * @property {string[]} sentences - All commands of this module.
-     */
-    voice: {
-        mode: "PING",
-        sentences: ["OPEN HELP", "CLOSE HELP", "SHOW ALL Hosts", "HIDE HOSTS"],
-    },
-
-    /**
      * @function getTranslations
      * @description Translations for this module.
      * @override
@@ -132,7 +122,7 @@ Module.register("MMM-ParallelPing", {
      */
     start() {
         Log.info(`Starting module: ${this.name}`);
-        this.checkHosts();
+        setInterval(() => this.checkHosts(), ths.config.updateInterval * 1000);
     },
 
     /**
@@ -159,9 +149,6 @@ Module.register("MMM-ParallelPing", {
         if (notification === "STATUS_UPDATE") {
             this.status = payload;
             this.updateDom(this.config.transitionTime);
-            setTimeout(() => {
-                this.checkHosts();
-            }, this.config.updateInterval * 1000);
         }
     },
 
@@ -201,44 +188,5 @@ Module.register("MMM-ParallelPing", {
                     updateInterval: this.config.updateInterval,
                 }
         );
-    },
-
-    /**
-     * @function checkCommands
-     * @description Checks for voice commands.
-     *
-     * @param {string} data - Text with commands.
-     *
-     * @returns {void}
-     */
-    checkCommands(data) {
-        if (/(HELP)/g.test(data)) {
-            if (/(CLOSE)/g.test(data) && !/(OPEN)/g.test(data)) {
-                this.sendNotification("CLOSE_MODAL");
-            } else if (/(OPEN)/g.test(data) && !/(CLOSE)/g.test(data)) {
-                this.sendNotification("OPEN_MODAL", {
-                    template: "templates/HelpModal.njk",
-                    data: {
-                        ...this.voice,
-                        fns: {
-                            translate: this.translate.bind(this),
-                        },
-                    },
-                });
-            }
-        } else if (/(HIDE)/g.test(data) && /(HOSTS)/g.test(data)) {
-            this.sendNotification("CLOSE_MODAL");
-        } else if (/(SHOW)/g.test(data) && /(HOSTS)/g.test(data)) {
-            this.sendNotification("OPEN_MODAL", {
-                template: "templates/PingModal.njk",
-                data: {
-                    config: this.config,
-                    status: this.status,
-                    fns: {
-                        translate: this.translate.bind(this),
-                    },
-                },
-            });
-        }
     },
 });
