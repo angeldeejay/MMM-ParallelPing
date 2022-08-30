@@ -32,6 +32,7 @@ const Log = require("../../js/logger.js");
  * @requires external:node_helper
  */
 module.exports = NodeHelper.create({
+    busy: false,
     /**
      * @function socketNotificationReceived
      * @description Receives socket notifications from the module.
@@ -43,42 +44,47 @@ module.exports = NodeHelper.create({
      *
      * @returns {void}
      */
-    async socketNotificationReceived(notification, payload) {
-        if (notification === "CHECK_HOSTS") {
-            if (payload.length === 0) {
-                Log.log("No hosts to ping");
-                this.sendSocketNotification("STATUS_UPDATE", status);
-            } else {
-                Log.log("Pinging " + payload.length + " hosts");
-                const status = [];
-
-                // Ensure to make all ping requests in parallel
-                await Promise.all(
-                    payload.map(async (h, i) => {
-                        let online = false;
-                        try {
-                            const { alive } = await ping.promise.probe(h.host, {
-                                timeout: h.timeout,
-                            });
-                            online = alive;
-                            // eslint-disable-next-line no-empty
-                        } catch (err) { }
-
-                        status.push({ online, ...h, index: i });
-                    })
-                );
-
-                status.sort((a, b) => a.index - b.index);
-                Log.log(
-                    "Received ping statuses for " + status.length + " hosts"
-                );
-                Log.log(
-                    "Rescheculing for the next " +
-                    status[0].updateInterval +
-                    " seconds"
-                );
-                this.sendSocketNotification("STATUS_UPDATE", status);
-            }
+    socketNotificationReceived(notification, payload) {
+        if (notification === "CHECK_HOSTS" && !this.busy) {
+            this.busy = true;
+            this.checkHosts(payload).then(() => this.busy = false);
         }
     },
+
+    async checkHosts(hosts) {
+        if (payload.length === 0) {
+            Log.log("No hosts to ping");
+            this.sendSocketNotification("STATUS_UPDATE", status);
+        } else {
+            Log.log("Pinging " + payload.length + " hosts");
+            const status = [];
+
+            // Ensure to make all ping requests in parallel
+            await Promise.all(
+                payload.map(async (h, i) => {
+                    let online = false;
+                    try {
+                        const { alive } = await ping.promise.probe(h.host, {
+                            timeout: h.timeout,
+                        });
+                        online = alive;
+                        // eslint-disable-next-line no-empty
+                    } catch (err) { }
+
+                    status.push({ online, ...h, index: i });
+                })
+            );
+
+            status.sort((a, b) => a.index - b.index);
+            Log.log(
+                "Received ping statuses for " + status.length + " hosts"
+            );
+            Log.log(
+                "Rescheculing for the next " +
+                status[0].updateInterval +
+                " seconds"
+            );
+            this.sendSocketNotification("STATUS_UPDATE", status);
+        }
+    }
 });

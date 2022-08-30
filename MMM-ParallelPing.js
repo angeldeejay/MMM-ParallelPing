@@ -176,18 +176,7 @@ Module.register("MMM-ParallelPing", {
      */
     notificationReceived(notification, payload, sender) {
         if (notification === "ALL_MODULES_STARTED") {
-            this.sendNotification("REGISTER_VOICE_MODULE", this.voice);
-        } else if (
-            notification === "VOICE_PING" &&
-            sender.name === "MMM-voice"
-        ) {
-            this.checkCommands(payload);
-        } else if (
-            notification === "VOICE_MODE_CHANGED" &&
-            sender.name === "MMM-voice" &&
-            payload.old === this.voice.mode
-        ) {
-            this.sendNotification("CLOSE_MODAL");
+            this.checkHosts();
         }
     },
 
